@@ -1,0 +1,419 @@
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+
+body.accessontu-dyslexic,
+body.accessontu-dyslexic * {
+    font-family: 'Atkinson Hyperlegible', sans-serif !important;
+}
+
+.accessontu-open {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 10000;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #2457a7;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.accessontu-panel {
+    position: fixed;
+    right: 20px;
+    bottom: 80px;
+    z-index: 10001;
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: white;
+    color: #222;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+}
+
+.accessontu-panel[hidden] {
+    display: none;
+}
+
+.accessontu-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.accessontu-panel__header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.accessontu-panel__header button {
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.accessontu-panel__section {
+    margin-bottom: 18px;
+}
+
+.accessontu-panel__section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.accessontu-panel select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px;
+}
+
+.accessontu-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.accessontu-controls button,
+#accessontu-reset {
+    padding: 8px 12px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    background: #f2f2f2;
+    color: #222;
+    cursor: pointer;
+}
+
+#accessontu-reset {
+    width: 100%;
+    margin-top: 5px;
+}
+
+
+body.accessontu-large-text {
+    font-size: var(--accessontu-font-size, 120%) !important;
+}
+.accessontu-panel input[type="range"] {
+    width: 100%;
+    cursor: pointer;
+}
+
+.accessontu-controls span {
+    min-width: 45px;
+    text-align: center;
+}
+
+body.accessontu-spacing {
+    line-height: var(--accessontu-line-spacing, 1.5) !important;
+    letter-spacing: var(--accessontu-letter-spacing, 0px) !important;
+}
+
+
+/* =====================================
+   ACCESSONTU — ВИСОКА КОНТРАСТНІСТЬ
+===================================== */
+
+/* Основний фон сторінки */
+body.accessontu-contrast {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+/* Основні області Moodle */
+body.accessontu-contrast #page-wrapper,
+body.accessontu-contrast #page,
+body.accessontu-contrast #page-content,
+body.accessontu-contrast #region-main,
+body.accessontu-contrast #region-main-box,
+body.accessontu-contrast #topofscroll,
+body.accessontu-contrast .main-inner,
+body.accessontu-contrast .container-fluid,
+body.accessontu-contrast .drawer-content,
+body.accessontu-contrast .content {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+/* Картки та контейнери */
+body.accessontu-contrast .card,
+body.accessontu-contrast .card-body,
+body.accessontu-contrast .card-header,
+body.accessontu-contrast .block,
+body.accessontu-contrast .course-section,
+body.accessontu-contrast .generalbox,
+body.accessontu-contrast .activity-item,
+body.accessontu-contrast .list-group-item {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffff00 !important;
+    box-shadow: none !important;
+}
+
+/* Верхня панель */
+body.accessontu-contrast header,
+body.accessontu-contrast .navbar,
+body.accessontu-contrast #page-header {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+    border-bottom: 2px solid #ffff00 !important;
+}
+
+/* Заголовки */
+body.accessontu-contrast h1,
+body.accessontu-contrast h2,
+body.accessontu-contrast h3,
+body.accessontu-contrast h4,
+body.accessontu-contrast h5,
+body.accessontu-contrast h6 {
+    color: #ffff00 !important;
+    font-weight: bold !important;
+}
+
+/* Основний текст */
+body.accessontu-contrast p,
+body.accessontu-contrast span,
+body.accessontu-contrast li,
+body.accessontu-contrast label,
+body.accessontu-contrast td,
+body.accessontu-contrast th,
+body.accessontu-contrast div {
+    color: #ffffff !important;
+}
+
+/* Посилання */
+body.accessontu-contrast a {
+    color: #00ffff !important;
+    text-decoration: underline !important;
+    font-weight: bold !important;
+}
+
+body.accessontu-contrast a:hover,
+body.accessontu-contrast a:focus {
+    color: #ffff00 !important;
+    outline: 2px solid #ffff00 !important;
+    outline-offset: 2px;
+}
+
+/* Навігація */
+body.accessontu-contrast .nav-tabs,
+body.accessontu-contrast .nav-link,
+body.accessontu-contrast .secondary-navigation {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-color: #ffff00 !important;
+}
+
+/* Поля введення */
+body.accessontu-contrast input,
+body.accessontu-contrast select,
+body.accessontu-contrast textarea {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffff00 !important;
+}
+
+/* Кнопки */
+body.accessontu-contrast button,
+body.accessontu-contrast .btn {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+    border: 2px solid #ffff00 !important;
+    font-weight: bold !important;
+}
+
+body.accessontu-contrast button:hover,
+body.accessontu-contrast .btn:hover {
+    background-color: #ffff00 !important;
+    color: #000000 !important;
+}
+
+/* Виділений текст */
+body.accessontu-contrast ::selection {
+    background-color: #ffff00 !important;
+    color: #000000 !important;
+}
+
+/* Межі таблиць */
+body.accessontu-contrast table,
+body.accessontu-contrast td,
+body.accessontu-contrast th {
+    border-color: #ffff00 !important;
+}
+
+/* Панель доступності */
+body.accessontu-contrast .accessontu-panel {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffff00 !important;
+    box-shadow: 0 0 12px rgba(255, 255, 0, 0.4) !important;
+}
+
+body.accessontu-contrast .accessontu-panel * {
+    color: #ffffff !important;
+}
+
+body.accessontu-contrast .accessontu-panel h3,
+body.accessontu-contrast .accessontu-panel label {
+    color: #ffff00 !important;
+}
+
+body.accessontu-contrast .accessontu-panel button,
+body.accessontu-contrast .accessontu-panel select {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+    border: 2px solid #ffff00 !important;
+}
+
+/* Кнопка відкриття доступності */
+body.accessontu-contrast .accessontu-open {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+    border: 2px solid #ffff00 !important;
+}
+
+/* Фокус клавіатури */
+body.accessontu-contrast *:focus-visible {
+    outline: 3px solid #ffff00 !important;
+    outline-offset: 3px !important;
+}
+
+
+/* 
+   ТЕМНА ТЕМА
+*/
+
+/* Основний фон */
+body.accessontu-dark {
+    background: #15181b !important;
+    color: #ffffff !important;
+}
+
+/* Усі основні області Moodle */
+body.accessontu-dark #page-wrapper,
+body.accessontu-dark #page,
+body.accessontu-dark #page-content,
+body.accessontu-dark #region-main-box,
+body.accessontu-dark #region-main,
+body.accessontu-dark #topofscroll,
+body.accessontu-dark .main-inner,
+body.accessontu-dark .container-fluid,
+body.accessontu-dark .drawer-content,
+body.accessontu-dark .content,
+body.accessontu-dark .course-content,
+body.accessontu-dark .secondary-navigation,
+body.accessontu-dark .tertiary-navigation,
+body.accessontu-dark .tab-content {
+    background-color: #15181b !important;
+    color: #ffffff !important;
+}
+
+/* Картки та внутрішні блоки */
+body.accessontu-dark .card,
+body.accessontu-dark .card-body,
+body.accessontu-dark .card-header,
+body.accessontu-dark .course-section,
+body.accessontu-dark .generalbox,
+body.accessontu-dark .block,
+body.accessontu-dark .block .card,
+body.accessontu-dark .activity-item,
+body.accessontu-dark .list-group-item {
+    background-color: #22272b !important;
+    color: #ffffff !important;
+    border-color: #444b52 !important;
+    box-shadow: none !important;
+}
+
+/* Верхня навігація */
+body.accessontu-dark header,
+body.accessontu-dark .navbar,
+body.accessontu-dark #page-header,
+body.accessontu-dark .header {
+    background-color: #398443 !important;
+    color: #ffffff !important;
+}
+
+/* Навігація всередині курсу */
+body.accessontu-dark .nav-tabs,
+body.accessontu-dark .nav-tabs .nav-link,
+body.accessontu-dark .secondary-navigation .nav-link {
+    background-color: #22272b !important;
+    color: #ffffff !important;
+    border-color: #444b52 !important;
+}
+
+/* Заголовки */
+body.accessontu-dark h1,
+body.accessontu-dark h2,
+body.accessontu-dark h3,
+body.accessontu-dark h4,
+body.accessontu-dark h5,
+body.accessontu-dark h6 {
+    color: #ffffff !important;
+}
+
+/* Увесь звичайний текст */
+body.accessontu-dark p,
+body.accessontu-dark span,
+body.accessontu-dark li,
+body.accessontu-dark label,
+body.accessontu-dark td,
+body.accessontu-dark th,
+body.accessontu-dark div {
+    color: #ffffff;
+}
+
+/* Посилання */
+body.accessontu-dark a {
+    color: #8ab4f8 !important;
+}
+
+body.accessontu-dark a:hover {
+    color: #c2d9ff !important;
+}
+
+/* Поля введення */
+body.accessontu-dark input,
+body.accessontu-dark select,
+body.accessontu-dark textarea {
+    background-color: #30363b !important;
+    color: #ffffff !important;
+    border: 1px solid #666666 !important;
+}
+
+/* Кнопки */
+body.accessontu-dark button,
+body.accessontu-dark .btn {
+    background-color: #30363b;
+    color: #ffffff !important;
+    border-color: #666666 !important;
+}
+
+/* Панель доступності */
+body.accessontu-dark .accessontu-panel {
+    background-color: #22272b !important;
+    color: #ffffff !important;
+    border: 1px solid #555555 !important;
+}
+
+body.accessontu-dark .accessontu-panel * {
+    color: #ffffff !important;
+}
+
+body.accessontu-dark .accessontu-panel select,
+body.accessontu-dark .accessontu-panel button {
+    background-color: #30363b !important;
+    color: #ffffff !important;
+    border-color: #666666 !important;
+}
+
+/* Кнопка відкриття панелі */
+body.accessontu-dark .accessontu-open {
+    background-color: #398443 !important;
+    color: #ffffff !important;
+}
+

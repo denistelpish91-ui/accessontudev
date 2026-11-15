@@ -1,0 +1,116 @@
+<div id="accessontu-panel" class="accessontu-panel" hidden>
+    <div class="accessontu-panel__header">
+        <h3>Налаштування доступності</h3>
+        <button type="button" id="accessontu-close" aria-label="Закрити">×</button>
+    </div>
+
+    <div class="accessontu-panel__section">
+        <label for="accessontu-font">Шрифт</label>
+        <select id="accessontu-font">
+            <option value="default">Стандартний</option>
+            <option value="dyslexic">Шрифт для людей з дислексією</option>
+        </select>
+    </div>
+
+    <div class="accessontu-panel__section">
+        <label for="accessontu-size">Розмір тексту</label>
+        <div class="accessontu-controls">
+            <button type="button" id="accessontu-decrease">−</button>
+            <span id="accessontu-size-value">100%</span>
+            <button type="button" id="accessontu-increase">+</button>
+        </div>
+    </div>
+
+    <div class="accessontu-panel__section">
+        <label for="accessontu-theme">Тема оформлення</label>
+        <select id="accessontu-theme">
+            <option value="light">Світла</option>
+            <option value="dark">Темна</option>
+            <option value="contrast">Висока контрастність</option>
+        </select>
+    </div>
+<div class="accessontu-panel__section">
+    <label for="accessontu-line-spacing">
+        Міжрядковий інтервал
+    </label>
+
+    <div class="accessontu-controls">
+        <input
+            type="range"
+            id="accessontu-line-spacing"
+            min="1"
+            max="2.5"
+            step="0.1"
+            value="1.5"
+        >
+
+        <span id="accessontu-line-value">1.5</span>
+    </div>
+</div>
+
+<div class="accessontu-panel__section">
+    <label for="accessontu-letter-spacing">
+        Відстань між літерами
+    </label>
+
+    <div class="accessontu-controls">
+        <input
+            type="range"
+            id="accessontu-letter-spacing"
+            min="0"
+            max="5"
+            step="0.5"
+            value="0"
+        >
+
+        <span id="accessontu-letter-value">0 px</span>
+    </div>
+</div>
+
+
+
+<div class="accessontu-panel__section">
+    <label>Озвучування тексту</label>
+
+    <div class="accessontu-panel__section">
+        <label for="accessontu-voice">Голос</label>
+        <select id="accessontu-voice">
+            <option value="">Автоматичний український голос</option>
+        </select>
+    </div>
+
+    <div class="accessontu-panel__section">
+        <label for="accessontu-speed">Швидкість читання</label>
+
+        <div class="accessontu-controls">
+            <input type="range" id="accessontu-speed"
+                   min="0.5" max="2" step="0.1" value="1">
+
+            <span id="accessontu-speed-value">1.0</span>
+        </div>
+    </div>
+
+
+<button type="button" id="accessontu-speak-selected">
+    Озвучити виділений текст
+</button>
+
+    <div class="accessontu-controls">
+        <button type="button" id="accessontu-speak">
+            Озвучити текст
+        </button>
+
+        <button type="button" id="accessontu-stop">
+            Зупинити
+        </button>
+    </div>
+</div>
+
+
+
+    <button type="button" id="accessontu-reset">Скинути налаштування</button>
+</div>
+
+<button type="button" id="accessontu-open" class="accessontu-open">
+    Доступність
+</button>
