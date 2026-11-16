@@ -2,7 +2,13 @@
 
 body.accessontu-dyslexic,
 body.accessontu-dyslexic * {
-    font-family: 'Atkinson Hyperlegible', sans-serif !important;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+}
+
+/* Панель доступності залишається незалежною */
+body.accessontu-dyslexic .accessontu-panel,
+body.accessontu-dyslexic .accessontu-panel * {
+    font-family: Arial, sans-serif !important;
 }
 
 .accessontu-open {
@@ -218,7 +224,7 @@ body.accessontu-contrast textarea {
 }
 
 /* Кнопки */
-body.accessontu-contrast button,
+body.accessontu-contrast button:not(.accessontu-panel button),
 body.accessontu-contrast .btn {
     background-color: #000000 !important;
     color: #ffff00 !important;
@@ -417,3 +423,126 @@ body.accessontu-dark .accessontu-open {
     color: #ffffff !important;
 }
 
+/* =====================================
+   ACCESSONTU — ФІКСОВАНІ РОЗМІРИ ПАНЕЛІ
+===================================== */
+
+/* Незалежні стилі панелі */
+.accessontu-panel,
+.accessontu-panel * {
+    box-sizing: border-box !important;
+}
+
+/* Фіксуємо розмір панелі */
+.accessontu-panel {
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+
+    font-family: Arial, sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+    letter-spacing: normal !important;
+}
+
+/* Заголовок */
+.accessontu-panel__header {
+    min-height: 30px;
+}
+
+/* Усі кнопки панелі */
+.accessontu-panel button,
+.accessontu-panel input,
+.accessontu-panel select {
+    box-sizing: border-box !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    letter-spacing: normal !important;
+}
+
+/* Кнопки керування */
+.accessontu-panel .accessontu-controls button {
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+}
+
+/* Кнопка скидання */
+.accessontu-panel #accessontu-reset {
+    width: 100% !important;
+    height: 36px !important;
+    min-height: 36px !important;
+}
+
+/* Кнопка закриття */
+.accessontu-panel__header button {
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+}
+
+/* Поля вибору */
+.accessontu-panel select {
+    width: 100% !important;
+    height: 38px !important;
+    min-height: 38px !important;
+}
+
+/* Забороняємо зміну розмірів елементів через теми */
+.accessontu-panel button,
+.accessontu-panel select {
+    font-weight: normal !important;
+    transform: none !important;
+}
+
+/* Кнопка озвучення виділеного тексту */
+.accessontu-speech-selected {
+    display: block !important;
+    width: 100% !important;
+    max-width: 240px !important;
+    min-height: 42px !important;
+
+    margin: 25px auto !important;
+    padding: 10px 15px !important;
+
+    border-radius: 7px !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+
+    text-align: center !important;
+    cursor: pointer;
+}
+
+/* Кнопки керування озвученням */
+.accessontu-speech-start,
+.accessontu-speech-stop {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 0 !important;
+    margin: 5px !important;
+
+    border-radius: 8px !important;
+    font-size: 19px !important;
+    cursor: pointer;
+}
+
+/* Контейнер кнопок */
+.accessontu-speech-controls {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin: 15px 0 !important;
+}
