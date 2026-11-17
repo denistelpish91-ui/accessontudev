@@ -278,10 +278,7 @@ function initAccessibilityPanel() {
         });
     }
 
-    // ==========================================
-    // НАЛАШТУВАННЯ ОЗВУЧУВАННЯ
-    // ==========================================
-
+    // озвучка
     if (
         speakButton &&
         stopButton &&
@@ -292,7 +289,7 @@ function initAccessibilityPanel() {
     ) {
         let availableVoices = [];
 
-        // Збереження виділеного тексту.
+        // Збереження виділеного тексту
         let savedSelectedText = '';
 
         document.addEventListener('selectionchange', function() {
@@ -304,7 +301,7 @@ function initAccessibilityPanel() {
             }
         });
 
-        // Отримання доступних голосів браузера.
+        // Отримання голосів
         function loadVoices() {
             availableVoices = window.speechSynthesis.getVoices();
 

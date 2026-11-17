@@ -453,7 +453,7 @@ body.accessontu-contrast *:focus-visible {
     outline-offset: 3px !important;
 }
 
-/*MOREMENU фіксееееееееввжееееееееееееееееееееееееее*/
+/*MOREMENU фікс*/
 
 /* Світла тема */
 body:not(.accessontu-dark):not(.accessontu-contrast) .moremenu.navigation,
