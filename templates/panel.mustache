@@ -1,7 +1,17 @@
-<div id="accessontu-panel" class="accessontu-panel" hidden>
+<div id="accessontu-panel" class="accessontu-panel" role="dialog" aria-label="Налаштування доступності" hidden>
     <div class="accessontu-panel__header">
         <h3>Налаштування доступності</h3>
         <button type="button" id="accessontu-close" aria-label="Закрити">×</button>
+    </div>
+
+    <div class="accessontu-panel__section">
+        <label for="accessontu-preset">Готовий набір</label>
+        <select id="accessontu-preset">
+            <option value="">Власні налаштування</option>
+            <option value="lowvision">Слабкий зір</option>
+            <option value="dyslexia">Дислексія</option>
+            <option value="photophobia">Чутливість до світла</option>
+        </select>
     </div>
 
     <div class="accessontu-panel__section">
@@ -9,15 +19,16 @@
         <select id="accessontu-font">
             <option value="default">Стандартний</option>
             <option value="dyslexic">Шрифт для людей з дислексією</option>
+            <option value="legible">Чіткий шрифт (для слабозорих)</option>
         </select>
     </div>
 
     <div class="accessontu-panel__section">
-        <label for="accessontu-size">Розмір тексту</label>
-        <div class="accessontu-controls">
-            <button type="button" id="accessontu-decrease">−</button>
-            <span id="accessontu-size-value">100%</span>
-            <button type="button" id="accessontu-increase">+</button>
+        <div class="accessontu-label" id="accessontu-size-label">Розмір тексту</div>
+        <div class="accessontu-controls" role="group" aria-labelledby="accessontu-size-label">
+            <button type="button" id="accessontu-decrease" aria-label="Зменшити розмір тексту">−</button>
+            <span id="accessontu-size-value" aria-live="polite">100%</span>
+            <button type="button" id="accessontu-increase" aria-label="Збільшити розмір тексту">+</button>
         </div>
     </div>
 
@@ -29,88 +40,92 @@
             <option value="contrast">Висока контрастність</option>
         </select>
     </div>
-<div class="accessontu-panel__section">
-    <label for="accessontu-line-spacing">
-        Міжрядковий інтервал
-    </label>
-
-    <div class="accessontu-controls">
-        <input
-            type="range"
-            id="accessontu-line-spacing"
-            min="1"
-            max="2.5"
-            step="0.1"
-            value="1.5"
-        >
-
-        <span id="accessontu-line-value">1.5</span>
-    </div>
-</div>
-
-<div class="accessontu-panel__section">
-    <label for="accessontu-letter-spacing">
-        Відстань між літерами
-    </label>
-
-    <div class="accessontu-controls">
-        <input
-            type="range"
-            id="accessontu-letter-spacing"
-            min="0"
-            max="5"
-            step="0.5"
-            value="0"
-        >
-
-        <span id="accessontu-letter-value">0 px</span>
-    </div>
-</div>
-
-
-
-<div class="accessontu-panel__section">
-    <label>Озвучування тексту</label>
 
     <div class="accessontu-panel__section">
-        <label for="accessontu-voice">Голос</label>
-        <select id="accessontu-voice">
-            <option value="">Автоматичний український голос</option>
-        </select>
-    </div>
-
-    <div class="accessontu-panel__section">
-        <label for="accessontu-speed">Швидкість читання</label>
-
+        <label for="accessontu-line-spacing">Міжрядковий інтервал</label>
         <div class="accessontu-controls">
-            <input type="range" id="accessontu-speed"
-                   min="0.5" max="2" step="0.1" value="1">
-
-            <span id="accessontu-speed-value">1.0</span>
+            <input type="range" id="accessontu-line-spacing"
+                   min="1" max="2.5" step="0.1" value="1.5">
+            <span id="accessontu-line-value">1.5</span>
         </div>
     </div>
 
-
-<button type="button" id="accessontu-speak-selected">
-    Озвучити виділений текст
-</button>
-
-    <div class="accessontu-controls">
-        <button type="button" id="accessontu-speak" aria-label="Почати озвучення" title="Почати озвучення">
-             ▶
-        </button>
-
-        <button type="button" id="accessontu-stop"aria-label="Зупинити озвучення" title="Зупинити озвучення">
-            ■
-        </button>
+    <div class="accessontu-panel__section">
+        <label for="accessontu-letter-spacing">Відстань між літерами</label>
+        <div class="accessontu-controls">
+            <input type="range" id="accessontu-letter-spacing"
+                   min="0" max="5" step="0.5" value="0">
+            <span id="accessontu-letter-value">0 px</span>
+        </div>
     </div>
-</div>
 
+    <div class="accessontu-panel__section">
+        <div class="accessontu-label">Допомога під час читання</div>
 
+        <label class="accessontu-check" for="accessontu-ruler">
+            <input type="checkbox" id="accessontu-ruler">
+            Лінійка читання
+        </label>
+
+        <label class="accessontu-check" for="accessontu-narrow">
+            <input type="checkbox" id="accessontu-narrow">
+            Вузька колонка тексту
+        </label>
+
+        <label class="accessontu-check" for="accessontu-motion">
+            <input type="checkbox" id="accessontu-motion">
+            Вимкнути анімації
+        </label>
+    </div>
+
+    <div class="accessontu-panel__section" id="accessontu-speech-section">
+        <div class="accessontu-label">Озвучування тексту</div>
+
+        <div class="accessontu-panel__section">
+            <label for="accessontu-voice">Голос</label>
+            <select id="accessontu-voice">
+                <option value="">Автоматично (за мовою тексту)</option>
+            </select>
+        </div>
+
+        <div class="accessontu-panel__section">
+            <label for="accessontu-speed">Швидкість читання</label>
+            <div class="accessontu-controls">
+                <input type="range" id="accessontu-speed"
+                       min="0.5" max="2" step="0.1" value="1">
+                <span id="accessontu-speed-value">1.0</span>
+            </div>
+        </div>
+
+        <button type="button" id="accessontu-speak-selected">
+            Озвучити виділений текст
+        </button>
+
+        <button type="button" id="accessontu-read-from" aria-pressed="false">
+            Читати з обраного місця
+        </button>
+
+        <div class="accessontu-controls" role="group" aria-label="Керування озвученням">
+            <button type="button" id="accessontu-prev"
+                    aria-label="Попередній абзац" title="Попередній абзац">«</button>
+
+            <button type="button" id="accessontu-speak"
+                    aria-label="Почати озвучення" title="Почати озвучення">&#9654;&#xFE0E;</button>
+
+            <button type="button" id="accessontu-next"
+                    aria-label="Наступний абзац" title="Наступний абзац">»</button>
+
+            <button type="button" id="accessontu-stop"
+                    aria-label="Зупинити озвучення" title="Зупинити озвучення">&#9632;</button>
+        </div>
+
+        <p id="accessontu-status" class="accessontu-status" role="status" aria-live="polite"></p>
+    </div>
 
     <button type="button" id="accessontu-reset">Скинути налаштування</button>
 </div>
 
-<button type="button" id="accessontu-open" class="accessontu-open">
+<button type="button" id="accessontu-open" class="accessontu-open"
+        aria-controls="accessontu-panel" aria-expanded="false">
     Доступність
 </button>

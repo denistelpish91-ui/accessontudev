@@ -1,50 +1,312 @@
-
 function initAccessibilityPanel() {
-    const openButton = document.getElementById('accessontu-open');
-    const closeButton = document.getElementById('accessontu-close');
-    const panel = document.getElementById('accessontu-panel');
+    const byId = id => document.getElementById(id);
 
-    const fontSelect = document.getElementById('accessontu-font');
-    const themeSelect = document.getElementById('accessontu-theme');
+    const el = {
+        open: byId('accessontu-open'),
+        close: byId('accessontu-close'),
+        panel: byId('accessontu-panel'),
 
-    const decreaseButton = document.getElementById('accessontu-decrease');
-    const increaseButton = document.getElementById('accessontu-increase');
-    const sizeValue = document.getElementById('accessontu-size-value');
+        preset: byId('accessontu-preset'),
+        font: byId('accessontu-font'),
+        theme: byId('accessontu-theme'),
 
-    const resetButton = document.getElementById('accessontu-reset');
+        decrease: byId('accessontu-decrease'),
+        increase: byId('accessontu-increase'),
+        sizeValue: byId('accessontu-size-value'),
 
-    const lineSpacing = document.getElementById('accessontu-line-spacing');
-    const lineValue = document.getElementById('accessontu-line-value');
+        line: byId('accessontu-line-spacing'),
+        lineValue: byId('accessontu-line-value'),
+        letter: byId('accessontu-letter-spacing'),
+        letterValue: byId('accessontu-letter-value'),
 
-    const letterSpacing = document.getElementById('accessontu-letter-spacing');
-    const letterValue = document.getElementById('accessontu-letter-value');
+        ruler: byId('accessontu-ruler'),
+        narrow: byId('accessontu-narrow'),
+        motion: byId('accessontu-motion'),
 
-    // Елементи озвучування.
-    const speakButton = document.getElementById('accessontu-speak');
-    const speakSelectedButton = document.getElementById('accessontu-speak-selected');
-    const stopButton = document.getElementById('accessontu-stop');
+        speechSection: byId('accessontu-speech-section'),
+        voice: byId('accessontu-voice'),
+        speed: byId('accessontu-speed'),
+        speedValue: byId('accessontu-speed-value'),
+        speakSelected: byId('accessontu-speak-selected'),
+        readFrom: byId('accessontu-read-from'),
+        prev: byId('accessontu-prev'),
+        speak: byId('accessontu-speak'),
+        next: byId('accessontu-next'),
+        stop: byId('accessontu-stop'),
+        status: byId('accessontu-status'),
 
-    const voiceSelect = document.getElementById('accessontu-voice');
-    const speedSlider = document.getElementById('accessontu-speed');
-    const speedValue = document.getElementById('accessontu-speed-value');
+        reset: byId('accessontu-reset')
+    };
 
-    if (!openButton || !panel) {
+    if (!el.open || !el.panel) {
         console.error('Accessibility panel elements not found');
         return;
     }
 
-    let fontSize = 100;
+    /* ============================================================
+       Налаштування: єдине джерело істини — об'єкт state
+       ============================================================ */
 
-    // Збереження налаштувань у Moodle.
-    function saveSettings() {
+    const STORAGE_KEY = 'accessontu.settings';
+
+    const DEFAULTS = {
+        preset: '',
+        font: 'default',
+        theme: 'light',
+        fontsize: 100,
+        linespacing: 1.5,
+        letterspacing: 0,
+        ruler: false,
+        narrow: false,
+        motion: false,
+        voice: '',
+        speed: 1
+    };
+
+    const FONTS = ['default', 'dyslexic', 'legible'];
+    const THEMES = ['light', 'dark', 'contrast'];
+
+    // Готові набори налаштувань.
+    const PRESETS = {
+        lowvision: {
+            font: 'legible',
+            theme: 'contrast',
+            fontsize: 130,
+            linespacing: 1.8,
+            letterspacing: 1,
+            narrow: true,
+            ruler: false,
+            motion: false
+        },
+        dyslexia: {
+            font: 'dyslexic',
+            theme: 'light',
+            fontsize: 110,
+            linespacing: 2,
+            letterspacing: 1.5,
+            narrow: true,
+            ruler: true,
+            motion: false
+        },
+        photophobia: {
+            font: 'default',
+            theme: 'dark',
+            fontsize: 110,
+            linespacing: 1.6,
+            letterspacing: 0.5,
+            narrow: false,
+            ruler: false,
+            motion: true
+        }
+    };
+
+    function clamp(value, min, max, fallback) {
+        const number = Number(value);
+
+        if (!Number.isFinite(number)) {
+            return fallback;
+        }
+
+        return Math.min(max, Math.max(min, number));
+    }
+
+    // Приведення будь-яких даних (кеш, Moodle) до допустимих значень.
+    function sanitize(raw) {
+        const s = Object.assign({}, DEFAULTS, raw || {});
+
+        return {
+            preset: Object.prototype.hasOwnProperty.call(PRESETS, s.preset)
+                ? s.preset
+                : '',
+            font: FONTS.includes(s.font) ? s.font : DEFAULTS.font,
+            theme: THEMES.includes(s.theme) ? s.theme : DEFAULTS.theme,
+            fontsize: clamp(s.fontsize, 80, 150, DEFAULTS.fontsize),
+            linespacing: clamp(s.linespacing, 1, 2.5, DEFAULTS.linespacing),
+            letterspacing: clamp(s.letterspacing, 0, 5, DEFAULTS.letterspacing),
+            ruler: s.ruler === true || s.ruler === 'true',
+            narrow: s.narrow === true || s.narrow === 'true',
+            motion: s.motion === true || s.motion === 'true',
+            voice: String(s.voice || ''),
+            speed: clamp(s.speed, 0.5, 2, DEFAULTS.speed)
+        };
+    }
+
+    function readCache() {
+        try {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY));
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function writeCache() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (error) {
+            // Сховище недоступне — працюємо без кешу.
+        }
+    }
+
+    // Кеш застосовується одразу, щоб сторінка не блимала стандартним виглядом.
+    let state = sanitize(readCache());
+
+    /* ============================================================
+       Лінійка читання
+       ============================================================ */
+
+    const ruler = document.createElement('div');
+    ruler.className = 'accessontu-ruler';
+    ruler.setAttribute('aria-hidden', 'true');
+    ruler.hidden = true;
+    document.body.appendChild(ruler);
+
+    function moveRuler(y) {
+        ruler.style.transform = 'translateY(' + Math.round(y - 27) + 'px)';
+    }
+
+    moveRuler(window.innerHeight / 2);
+
+    document.addEventListener('mousemove', function(event) {
+        if (state.ruler) {
+            moveRuler(event.clientY);
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchmove', function(event) {
+        if (state.ruler && event.touches[0]) {
+            moveRuler(event.touches[0].clientY);
+        }
+    }, { passive: true });
+
+    /* ============================================================
+       Застосування налаштувань до сторінки та до панелі
+       ============================================================ */
+
+    function setSelectValue(select, value) {
+        if (!select) {
+            return;
+        }
+
+        const exists = Array.from(select.options).some(
+            option => option.value === value
+        );
+
+        if (exists) {
+            select.value = value;
+        }
+    }
+
+    function render() {
+        const body = document.body.classList;
+
+        // Шрифт.
+        body.toggle('accessontu-dyslexic', state.font === 'dyslexic');
+        body.toggle('accessontu-legible', state.font === 'legible');
+
+        // Тема.
+        body.remove('accessontu-dark', 'accessontu-contrast');
+
+        if (state.theme === 'dark') {
+            body.add('accessontu-dark');
+        }
+
+        if (state.theme === 'contrast') {
+            body.add('accessontu-contrast');
+        }
+
+        // Розмір тексту та інтервали.
+        const rootStyle = document.documentElement.style;
+
+        rootStyle.fontSize = state.fontsize === 100
+            ? ''
+            : state.fontsize + '%';
+
+        rootStyle.setProperty('--accessontu-line-spacing', state.linespacing);
+        rootStyle.setProperty(
+            '--accessontu-letter-spacing',
+            state.letterspacing + 'px'
+        );
+
+        // Клас інтервалів — лише якщо значення відрізняються від стандартних,
+        // щоб не змінювати сайт тим, хто нічого не налаштовував.
+        body.toggle(
+            'accessontu-spacing',
+            state.linespacing !== DEFAULTS.linespacing ||
+            state.letterspacing !== DEFAULTS.letterspacing
+        );
+
+        // Допоміжні засоби читання.
+        body.toggle('accessontu-narrow', state.narrow);
+        body.toggle('accessontu-reduce-motion', state.motion);
+        ruler.hidden = !state.ruler;
+
+        // Елементи панелі.
+        setSelectValue(el.preset, state.preset);
+        setSelectValue(el.font, state.font);
+        setSelectValue(el.theme, state.theme);
+
+        if (el.sizeValue) {
+            el.sizeValue.textContent = state.fontsize + '%';
+        }
+
+        if (el.line) {
+            el.line.value = state.linespacing;
+        }
+
+        if (el.lineValue) {
+            el.lineValue.textContent = state.linespacing.toFixed(1);
+        }
+
+        if (el.letter) {
+            el.letter.value = state.letterspacing;
+        }
+
+        if (el.letterValue) {
+            el.letterValue.textContent = state.letterspacing + ' px';
+        }
+
+        if (el.ruler) {
+            el.ruler.checked = state.ruler;
+        }
+
+        if (el.narrow) {
+            el.narrow.checked = state.narrow;
+        }
+
+        if (el.motion) {
+            el.motion.checked = state.motion;
+        }
+
+        if (el.speed) {
+            el.speed.value = state.speed;
+        }
+
+        if (el.speedValue) {
+            el.speedValue.textContent = state.speed.toFixed(1);
+        }
+
+        setSelectValue(el.voice, state.voice);
+    }
+
+    /* ============================================================
+       Збереження: кеш одразу, Moodle — із затримкою (debounce)
+       ============================================================ */
+
+    let saveTimer = null;
+
+    function saveToMoodle() {
+        if (typeof M === 'undefined' || !M.cfg) {
+            return;
+        }
+
         const data = new URLSearchParams();
 
         data.append('sesskey', M.cfg.sesskey);
-        data.append('font', fontSelect.value);
-        data.append('theme', themeSelect.value);
-        data.append('fontsize', fontSize);
-        data.append('linespacing', lineSpacing.value);
-        data.append('letterspacing', letterSpacing.value);
+        data.append('font', state.font);
+        data.append('theme', state.theme);
+        data.append('fontsize', state.fontsize);
+        data.append('linespacing', state.linespacing);
+        data.append('letterspacing', state.letterspacing);
 
         fetch(M.cfg.wwwroot + '/local/accessontu/save.php', {
             method: 'POST',
@@ -69,8 +331,33 @@ function initAccessibilityPanel() {
         });
     }
 
-    // Завантаження налаштувань із Moodle.
-    function loadSettings() {
+    function scheduleSave() {
+        writeCache();
+
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(saveToMoodle, 400);
+    }
+
+    // Будь-яка ручна зміна скидає вибраний набір на «Власні налаштування».
+    function update(patch, fromPreset) {
+        const extra = fromPreset ? {} : { preset: '' };
+
+        state = sanitize(Object.assign({}, state, patch, extra));
+        render();
+        scheduleSave();
+    }
+
+    function coreSettings(s) {
+        return [s.font, s.theme, s.fontsize, s.linespacing, s.letterspacing]
+            .join('|');
+    }
+
+    // Завантаження з Moodle: сервер має пріоритет для п'яти основних полів.
+    function loadFromMoodle() {
+        if (typeof M === 'undefined' || !M.cfg) {
+            return;
+        }
+
         fetch(M.cfg.wwwroot + '/local/accessontu/load.php', {
             method: 'GET',
             credentials: 'same-origin'
@@ -83,335 +370,713 @@ function initAccessibilityPanel() {
             return response.json();
         })
         .then(settings => {
-            // Відновлення шрифту.
-            fontSelect.value = settings.font;
+            const merged = sanitize(Object.assign({}, state, {
+                font: settings.font,
+                theme: settings.theme,
+                fontsize: settings.fontsize,
+                linespacing: settings.linespacing,
+                letterspacing: settings.letterspacing
+            }));
 
-            document.body.classList.toggle(
-                'accessontu-dyslexic',
-                settings.font === 'dyslexic'
-            );
-
-            // Відновлення теми.
-            themeSelect.value = settings.theme;
-
-            document.body.classList.remove(
-                'accessontu-dark',
-                'accessontu-contrast'
-            );
-
-            if (settings.theme === 'dark') {
-                document.body.classList.add('accessontu-dark');
+            if (coreSettings(merged) !== coreSettings(state)) {
+                merged.preset = '';
             }
 
-            if (settings.theme === 'contrast') {
-                document.body.classList.add('accessontu-contrast');
-            }
-
-            // Відновлення розміру тексту.
-            fontSize = Number(settings.fontsize);
-
-            document.documentElement.style.fontSize =
-                fontSize + '%';
-
-            sizeValue.textContent = fontSize + '%';
-
-            // Відновлення міжрядкового інтервалу.
-            lineSpacing.value = settings.linespacing;
-
-            document.documentElement.style.setProperty(
-                '--accessontu-line-spacing',
-                settings.linespacing
-            );
-
-            lineValue.textContent = settings.linespacing;
-
-            // Відновлення відстані між літерами.
-            letterSpacing.value = settings.letterspacing;
-
-            document.documentElement.style.setProperty(
-                '--accessontu-letter-spacing',
-                settings.letterspacing + 'px'
-            );
-
-            letterValue.textContent =
-                settings.letterspacing + ' px';
-
-            document.body.classList.add('accessontu-spacing');
+            state = merged;
+            render();
+            writeCache();
 
             console.log('Налаштування завантажено');
         })
         .catch(error => {
-            console.error(
-                'Не вдалося завантажити налаштування:',
-                error
-            );
+            console.error('Не вдалося завантажити налаштування:', error);
         });
     }
 
-    // Відкриття та закриття панелі.
-    openButton.addEventListener('click', function() {
-        panel.hidden = !panel.hidden;
+    /* ============================================================
+       Панель: відкриття, закриття, доступність
+       ============================================================ */
+
+    el.panel.setAttribute('role', 'dialog');
+    el.panel.setAttribute('tabindex', '-1');
+
+    if (!el.panel.hasAttribute('aria-label')) {
+        el.panel.setAttribute('aria-label', 'Налаштування доступності');
+    }
+
+    el.open.setAttribute('aria-controls', 'accessontu-panel');
+
+    function setPanel(isOpen, restoreFocus) {
+        el.panel.hidden = !isOpen;
+        el.open.setAttribute('aria-expanded', String(isOpen));
+
+        if (isOpen) {
+            (el.close || el.panel).focus();
+        } else {
+            setPickMode(false);
+
+            if (restoreFocus) {
+                el.open.focus();
+            }
+        }
+    }
+
+    el.open.addEventListener('click', function() {
+        setPanel(el.panel.hidden, true);
     });
 
-    if (closeButton) {
-        closeButton.addEventListener('click', function() {
-            panel.hidden = true;
+    if (el.close) {
+        el.close.addEventListener('click', function() {
+            setPanel(false, true);
         });
     }
 
-    // Зміна розміру тексту.
-    function updateFontSize() {
-        document.documentElement.style.fontSize = fontSize + '%';
-        sizeValue.textContent = fontSize + '%';
-        saveSettings();
-    }
-
-    if (increaseButton) {
-        increaseButton.addEventListener('click', function() {
-            fontSize = Math.min(fontSize + 10, 150);
-            updateFontSize();
-        });
-    }
-
-    if (decreaseButton) {
-        decreaseButton.addEventListener('click', function() {
-            fontSize = Math.max(fontSize - 10, 80);
-            updateFontSize();
-        });
-    }
-
-    // Зміна шрифту.
-    if (fontSelect) {
-        fontSelect.addEventListener('change', function() {
-            document.body.classList.toggle(
-                'accessontu-dyslexic',
-                fontSelect.value === 'dyslexic'
-            );
-
-            saveSettings();
-        });
-    }
-
-    // Зміна теми.
-    if (themeSelect) {
-        themeSelect.addEventListener('change', function() {
-            document.body.classList.remove(
-                'accessontu-dark',
-                'accessontu-contrast'
-            );
-
-            if (themeSelect.value === 'dark') {
-                document.body.classList.add('accessontu-dark');
-            }
-
-            if (themeSelect.value === 'contrast') {
-                document.body.classList.add('accessontu-contrast');
-            }
-
-            saveSettings();
-        });
-    }
-
-    // Зміна міжрядкового інтервалу.
-    if (lineSpacing) {
-        lineSpacing.addEventListener('input', function() {
-            document.documentElement.style.setProperty(
-                '--accessontu-line-spacing',
-                lineSpacing.value
-            );
-
-            document.body.classList.add('accessontu-spacing');
-            lineValue.textContent = lineSpacing.value;
-        });
-
-        lineSpacing.addEventListener('change', saveSettings);
-    }
-
-    // Зміна відстані між літерами.
-    if (letterSpacing) {
-        letterSpacing.addEventListener('input', function() {
-            document.documentElement.style.setProperty(
-                '--accessontu-letter-spacing',
-                letterSpacing.value + 'px'
-            );
-
-            document.body.classList.add('accessontu-spacing');
-            letterValue.textContent = letterSpacing.value + ' px';
-        });
-
-        letterSpacing.addEventListener('change', saveSettings);
-    }
-
-    // Скидання налаштувань.
-    if (resetButton) {
-        resetButton.addEventListener('click', function() {
-            fontSize = 100;
-
-            fontSelect.value = 'default';
-            themeSelect.value = 'light';
-
-            document.body.classList.remove(
-                'accessontu-dyslexic',
-                'accessontu-dark',
-                'accessontu-contrast',
-                'accessontu-spacing'
-            );
-
-            document.documentElement.style.fontSize = '';
-            sizeValue.textContent = '100%';
-
-            lineSpacing.value = 1.5;
-            letterSpacing.value = 0;
-
-            lineValue.textContent = '1.5';
-            letterValue.textContent = '0 px';
-
-            document.documentElement.style.removeProperty(
-                '--accessontu-line-spacing'
-            );
-
-            document.documentElement.style.removeProperty(
-                '--accessontu-letter-spacing'
-            );
-
-            saveSettings();
-        });
-    }
-
-    // озвучка
-    if (
-        speakButton &&
-        stopButton &&
-        voiceSelect &&
-        speedSlider &&
-        speedValue &&
-        window.speechSynthesis
-    ) {
-        let availableVoices = [];
-
-        // Збереження виділеного тексту
-        let savedSelectedText = '';
-
-        document.addEventListener('selectionchange', function() {
-            const selection = window.getSelection();
-            const selectedText = selection.toString().trim();
-
-            if (selectedText.length > 0) {
-                savedSelectedText = selectedText;
-            }
-        });
-
-        // Отримання голосів
-        function loadVoices() {
-            availableVoices = window.speechSynthesis.getVoices();
-
-            const ukrainianVoices = availableVoices.filter(
-                voice => voice.lang.toLowerCase().startsWith('uk')
-            );
-
-            const previousVoice = voiceSelect.value;
-
-            voiceSelect.innerHTML = '';
-
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = 'Автоматичний український голос';
-
-            voiceSelect.appendChild(defaultOption);
-
-            ukrainianVoices.forEach(voice => {
-                const option = document.createElement('option');
-
-                option.value = voice.name;
-                option.textContent = voice.name;
-
-                voiceSelect.appendChild(option);
-            });
-
-            // Відновлення попереднього вибору голосу.
-            if (ukrainianVoices.some(voice => voice.name === previousVoice)) {
-                voiceSelect.value = previousVoice;
-            }
+    document.addEventListener('keydown', function(event) {
+        if (event.key !== 'Escape') {
+            return;
         }
 
-        loadVoices();
-
-        window.speechSynthesis.addEventListener(
-            'voiceschanged',
-            loadVoices
-        );
-
-        // Отримання вибраного голосу.
-        function getSelectedVoice() {
-            return availableVoices.find(
-                voice => voice.name === voiceSelect.value
-            );
+        if (pickMode) {
+            setPickMode(false);
+            setStatus('');
+            return;
         }
 
-        // Загальна функція озвучування.
-        function speakText(text) {
-            if (!text || !text.trim()) {
-                alert('Текст для озвучування відсутній.');
+        if (!el.panel.hidden) {
+            setPanel(false, true);
+        }
+    });
+
+    /* ============================================================
+       Обробники налаштувань
+       ============================================================ */
+
+    if (el.preset) {
+        el.preset.addEventListener('change', function() {
+            const key = el.preset.value;
+
+            if (!PRESETS[key]) {
                 return;
             }
 
-            window.speechSynthesis.cancel();
-
-            const speech = new SpeechSynthesisUtterance(text);
-
-            speech.lang = 'uk-UA';
-            speech.rate = Number(speedSlider.value);
-            speech.pitch = 1;
-
-            const selectedVoice = getSelectedVoice();
-
-            if (selectedVoice) {
-                speech.voice = selectedVoice;
-            }
-
-            window.speechSynthesis.speak(speech);
-        }
-
-        // Зміна швидкості читання.
-        speedSlider.addEventListener('input', function() {
-            speedValue.textContent =
-                Number(speedSlider.value).toFixed(1);
-        });
-
-        // Озвучування всієї сторінки.
-        speakButton.addEventListener('click', function() {
-            const text = document.querySelector('main')?.innerText
-                || document.body.innerText;
-
-            speakText(text);
-        });
-
-        // Озвучування виділеного тексту.
-        if (speakSelectedButton) {
-            speakSelectedButton.addEventListener('click', function() {
-                const currentSelection = window.getSelection()
-                    .toString()
-                    .trim();
-
-                const textToSpeak = currentSelection || savedSelectedText;
-
-                if (!textToSpeak) {
-                    alert('Спочатку виділіть текст для озвучування.');
-                    return;
-                }
-
-                speakText(textToSpeak);
-            });
-        }
-
-        // Зупинка озвучування.
-        stopButton.addEventListener('click', function() {
-            window.speechSynthesis.cancel();
+            update(Object.assign({ preset: key }, PRESETS[key]), true);
         });
     }
 
-    // Завантаження збережених налаштувань.
-    loadSettings();
+    if (el.font) {
+        el.font.addEventListener('change', function() {
+            update({ font: el.font.value });
+        });
+    }
+
+    if (el.theme) {
+        el.theme.addEventListener('change', function() {
+            update({ theme: el.theme.value });
+        });
+    }
+
+    if (el.increase) {
+        el.increase.addEventListener('click', function() {
+            update({ fontsize: state.fontsize + 10 });
+        });
+    }
+
+    if (el.decrease) {
+        el.decrease.addEventListener('click', function() {
+            update({ fontsize: state.fontsize - 10 });
+        });
+    }
+
+    if (el.line) {
+        el.line.addEventListener('input', function() {
+            update({ linespacing: el.line.value });
+        });
+    }
+
+    if (el.letter) {
+        el.letter.addEventListener('input', function() {
+            update({ letterspacing: el.letter.value });
+        });
+    }
+
+    if (el.ruler) {
+        el.ruler.addEventListener('change', function() {
+            update({ ruler: el.ruler.checked });
+        });
+    }
+
+    if (el.narrow) {
+        el.narrow.addEventListener('change', function() {
+            update({ narrow: el.narrow.checked });
+        });
+    }
+
+    if (el.motion) {
+        el.motion.addEventListener('change', function() {
+            update({ motion: el.motion.checked });
+        });
+    }
+
+    if (el.reset) {
+        el.reset.addEventListener('click', function() {
+            stopReading();
+            setPickMode(false);
+
+            state = sanitize({});
+            render();
+
+            // Скидання зберігаємо одразу, без затримки.
+            clearTimeout(saveTimer);
+            writeCache();
+            saveToMoodle();
+        });
+    }
+
+    /* ============================================================
+       Озвучування: читання з обраного місця, пауза, навігація
+       ============================================================ */
+
+    const speech = window.speechSynthesis;
+
+    let setStatus = function() {};
+    let setPickMode = function() {};
+    let stopReading = function() {};
+    let pickMode = false;
+
+    if (!speech || !el.speak) {
+        // Браузер не підтримує озвучення — ховаємо весь блок.
+        if (el.speechSection) {
+            el.speechSection.hidden = true;
+        }
+    } else {
+        initSpeech();
+    }
+
+    function initSpeech() {
+        const BLOCK_SELECTOR =
+            'p, li, h1, h2, h3, h4, h5, h6, blockquote, dt, dd, ' +
+            'figcaption, td, th, pre';
+
+        const SKIP_SELECTOR =
+            'nav, aside, footer, script, style, [hidden], ' +
+            '[aria-hidden="true"], .accessontu-panel, .accessontu-open';
+
+        let voices = [];
+        let items = [];
+        let index = -1;
+        let runId = 0;
+        let playback = 'idle'; // idle | playing | paused
+        let currentBlock = null;
+        let hoverBlock = null;
+        let savedSelection = { text: '', lang: '' };
+
+        // ---------- допоміжні функції ----------
+
+        setStatus = function(text) {
+            if (el.status) {
+                el.status.textContent = text;
+            }
+        };
+
+        function setPlayback(value) {
+            playback = value;
+
+            if (!el.speak) {
+                return;
+            }
+
+            const labels = {
+                idle: 'Почати озвучення',
+                playing: 'Пауза',
+                paused: 'Продовжити озвучення'
+            };
+
+            el.speak.textContent = value === 'playing'
+                ? '\u275A\u275A'
+                : '\u25B6\uFE0E';
+
+            el.speak.setAttribute('aria-label', labels[value]);
+            el.speak.setAttribute('title', labels[value]);
+        }
+
+        function getLang(node) {
+            const element = node && node.nodeType === 1
+                ? node
+                : node && node.parentElement;
+
+            const withLang = element && element.closest('[lang]');
+
+            return (withLang && withLang.getAttribute('lang'))
+                || document.documentElement.lang
+                || 'uk-UA';
+        }
+
+        function textOf(node) {
+            return (node.innerText || '').replace(/\s+/g, ' ').trim();
+        }
+
+        function isVisible(node) {
+            return node.getClientRects().length > 0 &&
+                getComputedStyle(node).visibility !== 'hidden';
+        }
+
+        function getRoot() {
+            return document.querySelector('[role="main"]')
+                || document.getElementById('region-main')
+                || document.querySelector('main')
+                || document.body;
+        }
+
+        // Абзаци основного вмісту, без меню та службових блоків.
+        function collectItems() {
+            return Array.from(getRoot().querySelectorAll(BLOCK_SELECTOR))
+                .filter(node =>
+                    !node.querySelector(BLOCK_SELECTOR) &&
+                    !node.closest(SKIP_SELECTOR) &&
+                    isVisible(node) &&
+                    textOf(node).length > 1
+                )
+                .map(node => ({
+                    el: node,
+                    text: textOf(node),
+                    lang: getLang(node)
+                }));
+        }
+
+        function firstVisibleIndex(list) {
+            const found = list.findIndex(
+                item => item.el.getBoundingClientRect().bottom > 80
+            );
+
+            return found < 0 ? 0 : found;
+        }
+
+        // Довгі абзаци ділимо на речення: Chrome обриває дуже довге мовлення.
+        function chunkText(text) {
+            const parts = text.match(/[^.!?…]+[.!?…]*\s*/g) || [text];
+            const chunks = [];
+            let current = '';
+
+            parts.forEach(function(part) {
+                if (current && current.length + part.length > 220) {
+                    chunks.push(current.trim());
+                    current = part;
+                } else {
+                    current += part;
+                }
+            });
+
+            if (current.trim()) {
+                chunks.push(current.trim());
+            }
+
+            return chunks;
+        }
+
+        function hardCancel() {
+            if (speech.paused) {
+                speech.resume();
+            }
+
+            speech.cancel();
+        }
+
+        // ---------- підсвічування ----------
+
+        function inView(node) {
+            const rect = node.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+        }
+
+        function highlight(node) {
+            if (currentBlock) {
+                currentBlock.classList.remove('accessontu-reading');
+            }
+
+            currentBlock = node || null;
+
+            if (!currentBlock) {
+                return;
+            }
+
+            currentBlock.classList.add('accessontu-reading');
+
+            if (!inView(currentBlock)) {
+                const tall = currentBlock.getBoundingClientRect().height >
+                    window.innerHeight * 0.8;
+
+                currentBlock.scrollIntoView({
+                    block: tall ? 'start' : 'center',
+                    behavior: state.motion ? 'auto' : 'smooth'
+                });
+            }
+        }
+
+        // ---------- голоси ----------
+
+        function loadVoices() {
+            voices = speech.getVoices();
+
+            const ukrainian = voices.filter(
+                voice => voice.lang.toLowerCase().startsWith('uk')
+            );
+
+            if (!el.voice) {
+                return;
+            }
+
+            el.voice.innerHTML = '';
+
+            const auto = document.createElement('option');
+            auto.value = '';
+            auto.textContent = 'Автоматично (за мовою тексту)';
+            el.voice.appendChild(auto);
+
+            ukrainian.forEach(function(voice) {
+                const option = document.createElement('option');
+                option.value = voice.name;
+                option.textContent = voice.name;
+                el.voice.appendChild(option);
+            });
+
+            setSelectValue(el.voice, state.voice);
+        }
+
+        loadVoices();
+        speech.addEventListener('voiceschanged', loadVoices);
+
+        function makeUtterance(text, lang) {
+            const utterance = new SpeechSynthesisUtterance(text);
+
+            utterance.lang = lang;
+            utterance.rate = state.speed;
+            utterance.pitch = 1;
+
+            // Обраний голос застосовуємо лише до тексту його мови.
+            const voice = voices.find(v => v.name === state.voice);
+
+            if (voice && voice.lang.toLowerCase().startsWith(
+                lang.toLowerCase().slice(0, 2)
+            )) {
+                utterance.voice = voice;
+            }
+
+            return utterance;
+        }
+
+        // ---------- основний цикл читання ----------
+
+        function finish() {
+            highlight(null);
+            items = [];
+            index = -1;
+            setPlayback('idle');
+            setStatus('Озвучення завершено.');
+        }
+
+        function speakItem(i) {
+            if (i < 0 || i >= items.length) {
+                finish();
+                return;
+            }
+
+            const run = runId;
+            const item = items[i];
+            const chunks = chunkText(item.text);
+            let chunkIndex = 0;
+
+            index = i;
+            highlight(item.el);
+            setPlayback('playing');
+
+            setStatus(
+                items.length > 1
+                    ? 'Абзац ' + (i + 1) + ' з ' + items.length
+                    : 'Озвучення виділеного тексту'
+            );
+
+            function speakNextChunk() {
+                // runId змінюється при зупинці, переході чи новому запуску.
+                if (run !== runId) {
+                    return;
+                }
+
+                if (chunkIndex >= chunks.length) {
+                    speakItem(i + 1);
+                    return;
+                }
+
+                const utterance = makeUtterance(chunks[chunkIndex], item.lang);
+                chunkIndex += 1;
+
+                utterance.onend = speakNextChunk;
+
+                utterance.onerror = function(event) {
+                    const ignored = ['canceled', 'interrupted'];
+
+                    if (run === runId && !ignored.includes(event.error)) {
+                        setStatus('Не вдалося озвучити текст.');
+                        stopReading(true);
+                    }
+                };
+
+                speech.speak(utterance);
+            }
+
+            speakNextChunk();
+        }
+
+        function startReading(list, from) {
+            runId += 1;
+            hardCancel();
+
+            if (!list.length) {
+                setPlayback('idle');
+                setStatus('На сторінці немає тексту для озвучування.');
+                return;
+            }
+
+            items = list;
+            speakItem(from);
+        }
+
+        function jump(i) {
+            runId += 1;
+            hardCancel();
+            speakItem(i);
+        }
+
+        stopReading = function(keepStatus) {
+            runId += 1;
+            hardCancel();
+
+            highlight(null);
+            items = [];
+            index = -1;
+            setPlayback('idle');
+
+            if (!keepStatus) {
+                setStatus('');
+            }
+        };
+
+        function startFromVisible() {
+            const list = collectItems();
+            startReading(list, firstVisibleIndex(list));
+        }
+
+        // ---------- вибір місця читання кліком ----------
+
+        function blockFromNode(node) {
+            const element = node && node.nodeType === 1
+                ? node
+                : node && node.parentElement;
+
+            if (!element || element.closest('.accessontu-panel, .accessontu-open')) {
+                return null;
+            }
+
+            return element.closest(BLOCK_SELECTOR);
+        }
+
+        function setHover(block) {
+            if (hoverBlock === block) {
+                return;
+            }
+
+            if (hoverBlock) {
+                hoverBlock.classList.remove('accessontu-pick-hover');
+            }
+
+            hoverBlock = block;
+
+            if (hoverBlock) {
+                hoverBlock.classList.add('accessontu-pick-hover');
+            }
+        }
+
+        setPickMode = function(on) {
+            pickMode = on;
+
+            document.body.classList.toggle('accessontu-picking', on);
+
+            if (el.readFrom) {
+                el.readFrom.setAttribute('aria-pressed', String(on));
+            }
+
+            if (on) {
+                setStatus('Клацніть на абзац на сторінці. Esc — скасувати.');
+            } else {
+                setHover(null);
+            }
+        };
+
+        document.addEventListener('mouseover', function(event) {
+            if (pickMode) {
+                setHover(blockFromNode(event.target));
+            }
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!pickMode) {
+                return;
+            }
+
+            if (event.target.closest('.accessontu-panel, .accessontu-open')) {
+                return;
+            }
+
+            // Не даємо клікові відкрити посилання чи кнопку на сторінці.
+            event.preventDefault();
+            event.stopPropagation();
+
+            const block = blockFromNode(event.target);
+
+            setPickMode(false);
+
+            if (!block) {
+                setStatus('Тут немає тексту. Спробуйте ще раз.');
+                return;
+            }
+
+            const list = collectItems();
+
+            const from = list.findIndex(
+                item => item.el === block ||
+                    block.contains(item.el) ||
+                    item.el.contains(block)
+            );
+
+            if (from < 0) {
+                setStatus('Цей фрагмент неможливо озвучити.');
+                return;
+            }
+
+            startReading(list, from);
+        }, true);
+
+        // ---------- виділений текст ----------
+
+        function getSelectionInfo() {
+            const selection = window.getSelection();
+
+            return {
+                text: selection.toString().replace(/\s+/g, ' ').trim(),
+                lang: getLang(selection.anchorNode)
+            };
+        }
+
+        document.addEventListener('selectionchange', function() {
+            const info = getSelectionInfo();
+            const anchor = window.getSelection().anchorNode;
+            const element = anchor && (anchor.nodeType === 1
+                ? anchor
+                : anchor.parentElement);
+
+            if (info.text && !(element && element.closest('.accessontu-panel'))) {
+                savedSelection = info;
+            }
+        });
+
+        // ---------- кнопки ----------
+
+        if (el.speakSelected) {
+            el.speakSelected.addEventListener('click', function() {
+                const live = getSelectionInfo();
+                const chosen = live.text ? live : savedSelection;
+
+                if (!chosen.text) {
+                    setStatus('Спочатку виділіть текст на сторінці.');
+                    return;
+                }
+
+                startReading(
+                    [{ el: null, text: chosen.text, lang: chosen.lang }],
+                    0
+                );
+            });
+        }
+
+        if (el.readFrom) {
+            el.readFrom.addEventListener('click', function() {
+                if (pickMode) {
+                    setPickMode(false);
+                    setStatus('');
+                } else {
+                    setPickMode(true);
+                }
+            });
+        }
+
+        el.speak.addEventListener('click', function() {
+            if (playback === 'playing') {
+                speech.pause();
+                setPlayback('paused');
+                return;
+            }
+
+            if (playback === 'paused') {
+                speech.resume();
+                setPlayback('playing');
+                return;
+            }
+
+            startFromVisible();
+        });
+
+        if (el.prev) {
+            el.prev.addEventListener('click', function() {
+                if (playback === 'idle') {
+                    startFromVisible();
+                    return;
+                }
+
+                jump(Math.max(0, index - 1));
+            });
+        }
+
+        if (el.next) {
+            el.next.addEventListener('click', function() {
+                if (playback === 'idle') {
+                    startFromVisible();
+                    return;
+                }
+
+                jump(index + 1);
+            });
+        }
+
+        if (el.stop) {
+            el.stop.addEventListener('click', function() {
+                stopReading();
+            });
+        }
+
+        if (el.voice) {
+            el.voice.addEventListener('change', function() {
+                update({ voice: el.voice.value }, true);
+            });
+        }
+
+        if (el.speed) {
+            el.speed.addEventListener('input', function() {
+                update({ speed: el.speed.value }, true);
+            });
+        }
+
+        window.addEventListener('pagehide', function() {
+            speech.cancel();
+        });
+
+        setPlayback('idle');
+    }
+
+    /* ============================================================
+       Запуск
+       ============================================================ */
+
+    render();
+    loadFromMoodle();
 }
 
 // Запуск після завантаження сторінки.

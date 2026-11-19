@@ -1,180 +1,123 @@
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+/* Atkinson Hyperlegible Next — шрифт Braille Institute для слабозорих.
+   Inter — запасний шрифт: гарантує кирилицю, якщо в Atkinson її немає. */
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Atkinson+Hyperlegible+Next:wght@400;700&family=Inter:wght@400;600&display=swap');
 
-/* фікс іконок*/
+/* ============================================================
+   ТОКЕНИ ДИЗАЙНУ — золотий перетин φ = 1.618
+   Відступи: числа Фібоначчі 5 · 8 · 13 · 21 · 34 · 55
+   Шрифт: 16px → 26px (16 × φ); інтервал рядків 1.618
+   Кнопки: 71 × 44 (44 × φ), відкривашка: padding 13 × 21
+   ============================================================ */
+:root {
+    --ao-font: 'Atkinson Hyperlegible Next', 'Inter', Verdana, sans-serif;
+    --ao-font-dyslexic: 'Atkinson Hyperlegible', 'Inter', sans-serif;
 
-body.accessontu-dyslexic p,
-body.accessontu-dyslexic h1,
-body.accessontu-dyslexic h2,
-body.accessontu-dyslexic h3,
-body.accessontu-dyslexic h4,
-body.accessontu-dyslexic h5,
-body.accessontu-dyslexic h6,
-body.accessontu-dyslexic li,
-body.accessontu-dyslexic label,
-body.accessontu-dyslexic td,
-body.accessontu-dyslexic th,
-body.accessontu-dyslexic input,
-body.accessontu-dyslexic textarea,
-body.accessontu-dyslexic .activityname,
-body.accessontu-dyslexic .coursename {
-    font-family: 'Atkinson Hyperlegible', sans-serif;
+    --ao-s1: 5px;
+    --ao-s2: 8px;
+    --ao-s3: 13px;
+    --ao-s4: 21px;
+    --ao-s5: 34px;
+
+    --ao-fs: 16px;
+    --ao-fs-title: 26px;
+    --ao-lh: 1.618;
+
+    --ao-h: 44px;
+    --ao-w: 71px;
+    --ao-bw: 1px;
+
+    /* світла тема */
+    --ao-bg: #ffffff;
+    --ao-fg: #0a0f16;
+    --ao-head: #0a0f16;
+    --ao-line: #b4bfcc;
+    --ao-btn: #eef2f7;
+    --ao-btn-fg: #0a0f16;
+    --ao-btn-hover: #dce4ee;
+    --ao-btn-hover-fg: #0a0f16;
+    --ao-select-bg: #eef2f7;
+    --ao-select-fg: #0a0f16;
+    --ao-primary-bg: #17407f;
+    --ao-primary-fg: #ffffff;
+    --ao-primary-hover: #0f2f61;
+    --ao-read-bg: #fff1a8;
+    --ao-read-fg: #0a0f16;
+    --ao-dim: rgba(0, 0, 0, 0.4);
+    --ao-accent: #17407f;
+    --ao-open-bg: #17407f;
+    --ao-open-fg: #ffffff;
+    --ao-open-line: transparent;
 }
 
-
-body.accessontu-dyslexic .accessontu-panel,
-body.accessontu-dyslexic .accessontu-panel * {
-    font-family: Arial, sans-serif !important;
+body.accessontu-dark {
+    --ao-bg: #101214;
+    --ao-fg: #ffffff;
+    --ao-head: #ffffff;
+    --ao-line: #6b747d;
+    --ao-btn: #1f2429;
+    --ao-btn-fg: #ffffff;
+    --ao-btn-hover: #323a41;
+    --ao-btn-hover-fg: #ffffff;
+    --ao-select-bg: #1f2429;
+    --ao-select-fg: #ffffff;
+    --ao-primary-bg: #a9c8ff;
+    --ao-primary-fg: #0a0f16;
+    --ao-primary-hover: #ffffff;
+    --ao-read-bg: #4a4300;
+    --ao-read-fg: #ffffff;
+    --ao-dim: rgba(0, 0, 0, 0.6);
+    --ao-accent: #a9c8ff;
+    --ao-open-bg: #398443;
+    --ao-open-fg: #ffffff;
+    --ao-open-line: transparent;
 }
 
-/* панелі та кнопка */
-
-.accessontu-open {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    z-index: 10000;
-    padding: 12px 18px;
-    border: none;
-    border-radius: 8px;
-    background: #2457a7;
-    color: #ffffff;
-    font-size: 15px;
-    cursor: pointer;
+body.accessontu-contrast {
+    --ao-bg: #000000;
+    --ao-fg: #ffffff;
+    --ao-head: #ffff00;
+    --ao-line: #ffff00;
+    --ao-btn: #000000;
+    --ao-btn-fg: #ffff00;
+    --ao-btn-hover: #ffff00;
+    --ao-btn-hover-fg: #000000;
+    --ao-select-bg: #ffff00;
+    --ao-select-fg: #000000;
+    --ao-primary-bg: #ffff00;
+    --ao-primary-fg: #000000;
+    --ao-primary-hover: #ffffff;
+    --ao-read-bg: #ffff00;
+    --ao-read-fg: #000000;
+    --ao-dim: rgba(0, 0, 0, 0.75);
+    --ao-accent: #ffff00;
+    --ao-open-bg: #000000;
+    --ao-open-fg: #ffff00;
+    --ao-open-line: #ffff00;
+    --ao-bw: 2px;
 }
 
-.accessontu-panel {
-    position: fixed;
-    right: 20px;
-    bottom: 80px;
-    z-index: 10001;
-    box-sizing: border-box !important;
-    width: 300px !important;
-    min-width: 300px !important;
-    max-width: 300px !important;
-    padding: 20px;
-    border: 1px solid #cccccc;
-    border-radius: 10px;
-    background: #ffffff;
-    color: #222222;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    font-family: Arial, sans-serif !important;
-    font-size: 16px !important;
-    line-height: 1.4 !important;
-    letter-spacing: normal !important;
+/* ============================================================
+   ШРИФТ ДЛЯ СЛАБОЗОРИХ / ДИСЛЕКСІЇ
+   (іконки Moodle не чіпаємо: i, .fa, span)
+   ============================================================ */
+body.accessontu-dyslexic :is(
+    p, h1, h2, h3, h4, h5, h6, li, a, label, td, th,
+    input, textarea, select, .btn, .nav-link, .activityname, .coursename
+) {
+    font-family: var(--ao-font-dyslexic);
 }
 
-.accessontu-panel *,
-.accessontu-panel *::before,
-.accessontu-panel *::after {
-    box-sizing: border-box !important;
+/* Новий шрифт у списку вибору: Atkinson Hyperlegible Next */
+body.accessontu-legible :is(
+    p, h1, h2, h3, h4, h5, h6, li, a, label, td, th,
+    input, textarea, select, .btn, .nav-link, .activityname, .coursename
+) {
+    font-family: var(--ao-font);
 }
 
-.accessontu-panel[hidden] {
-    display: none;
-}
-
-.accessontu-panel__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 30px;
-    margin-bottom: 18px;
-}
-
-.accessontu-panel__header h3 {
-    margin: 0;
-    font-size: 18px;
-}
-
-.accessontu-panel__section {
-    margin-bottom: 18px;
-}
-
-.accessontu-panel__section label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-}
-
-.accessontu-panel button,
-.accessontu-panel input,
-.accessontu-panel select {
-    font-family: Arial, sans-serif !important;
-    font-size: 14px !important;
-    line-height: 1.2 !important;
-    letter-spacing: normal !important;
-}
-
-.accessontu-panel button,
-.accessontu-panel select {
-    font-weight: normal !important;
-    transform: none !important;
-}
-
-.accessontu-panel select {
-    width: 100% !important;
-    height: 38px !important;
-    min-height: 38px !important;
-    padding: 8px;
-}
-
-.accessontu-panel__header button {
-    width: 32px !important;
-    min-width: 32px !important;
-    height: 32px !important;
-    padding: 0 !important;
-    flex-shrink: 0 !important;
-    border: none;
-    background: transparent;
-    font-size: 24px !important;
-    cursor: pointer;
-}
-
-.accessontu-controls {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.accessontu-controls button {
-    width: 42px !important;
-    min-width: 42px !important;
-    height: 36px !important;
-    min-height: 36px !important;
-    padding: 0 !important;
-    flex-shrink: 0 !important;
-    border: 1px solid #aaaaaa;
-    border-radius: 5px;
-    background: #f2f2f2;
-    color: #222222;
-    cursor: pointer;
-}
-
-.accessontu-controls span {
-    min-width: 45px;
-    text-align: center;
-}
-
-#accessontu-reset {
-    width: 100%;
-    height: 36px !important;
-    min-height: 36px !important;
-    margin-top: 5px;
-    padding: 8px 12px;
-    border: 1px solid #aaaaaa;
-    border-radius: 5px;
-    background: #f2f2f2;
-    color: #222222;
-    cursor: pointer;
-}
-
-.accessontu-panel input[type="range"] {
-    width: 100%;
-    cursor: pointer;
-}
-
-/*налаштування тексту*/
-
+/* ============================================================
+   НАЛАШТУВАННЯ ТЕКСТУ
+   ============================================================ */
 body.accessontu-large-text {
     font-size: var(--accessontu-font-size, 120%) !important;
 }
@@ -184,8 +127,9 @@ body.accessontu-spacing {
     letter-spacing: var(--accessontu-letter-spacing, 0px) !important;
 }
 
-/* темна тема*/
-
+/* ============================================================
+   ТЕМНА ТЕМА (сторінка)
+   ============================================================ */
 body.accessontu-dark {
     background: #15181b !important;
     color: #ffffff !important;
@@ -279,31 +223,9 @@ body.accessontu-dark .btn {
     border-color: #666666 !important;
 }
 
-body.accessontu-dark .accessontu-panel {
-    background-color: #22272b !important;
-    color: #ffffff !important;
-    border: 1px solid #555555 !important;
-}
-
-body.accessontu-dark .accessontu-panel *,
-body.accessontu-dark .accessontu-panel select,
-body.accessontu-dark .accessontu-panel button {
-    color: #ffffff !important;
-}
-
-body.accessontu-dark .accessontu-panel select,
-body.accessontu-dark .accessontu-panel button {
-    background-color: #30363b !important;
-    border-color: #666666 !important;
-}
-
-body.accessontu-dark .accessontu-open {
-    background-color: #398443 !important;
-    color: #ffffff !important;
-}
-
-/*тема високої контрастності*/
-
+/* ============================================================
+   ТЕМА ВИСОКОЇ КОНТРАСТНОСТІ (сторінка)
+   ============================================================ */
 body.accessontu-contrast {
     background-color: #000000 !important;
     color: #ffffff !important;
@@ -394,7 +316,7 @@ body.accessontu-contrast textarea {
     border: 2px solid #ffff00 !important;
 }
 
-body.accessontu-contrast button:not(.accessontu-panel button),
+body.accessontu-contrast button,
 body.accessontu-contrast .btn {
     background-color: #000000 !important;
     color: #ffff00 !important;
@@ -404,6 +326,13 @@ body.accessontu-contrast .btn {
 
 body.accessontu-contrast button:hover,
 body.accessontu-contrast .btn:hover {
+    background-color: #ffff00 !important;
+    color: #000000 !important;
+}
+
+/* Випадні списки: чорний текст на жовтому тлі */
+body.accessontu-contrast option,
+body.accessontu-contrast optgroup {
     background-color: #ffff00 !important;
     color: #000000 !important;
 }
@@ -419,41 +348,14 @@ body.accessontu-contrast th {
     border-color: #ffff00 !important;
 }
 
-body.accessontu-contrast .accessontu-panel {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    border: 2px solid #ffff00 !important;
-    box-shadow: 0 0 12px rgba(255, 255, 0, 0.4) !important;
-}
-
-body.accessontu-contrast .accessontu-panel * {
-    color: #ffffff !important;
-}
-
-body.accessontu-contrast .accessontu-panel h3,
-body.accessontu-contrast .accessontu-panel label {
-    color: #ffff00 !important;
-}
-
-body.accessontu-contrast .accessontu-panel button,
-body.accessontu-contrast .accessontu-panel select {
-    background-color: #000000 !important;
-    color: #ffff00 !important;
-    border: 2px solid #ffff00 !important;
-}
-
-body.accessontu-contrast .accessontu-open {
-    background-color: #000000 !important;
-    color: #ffff00 !important;
-    border: 2px solid #ffff00 !important;
-}
-
 body.accessontu-contrast *:focus-visible {
     outline: 3px solid #ffff00 !important;
     outline-offset: 3px !important;
 }
 
-/*MOREMENU фікс*/
+/* ============================================================
+   MOREMENU фікс
+   ============================================================ */
 
 /* Світла тема */
 body:not(.accessontu-dark):not(.accessontu-contrast) .moremenu.navigation,
@@ -475,7 +377,7 @@ body:not(.accessontu-dark):not(.accessontu-contrast) .moremenu.navigation .nav-l
     border-color: #2457a7 !important;
 }
 
-/*Темна тема*/
+/* Темна тема */
 body.accessontu-dark .moremenu.navigation,
 body.accessontu-dark .moremenu.navigation .nav-tabs,
 body.accessontu-dark .moremenu.navigation .nav-link,
@@ -485,7 +387,7 @@ body.accessontu-dark .moremenu.navigation .nav-link.active {
     border-color: #444b52 !important;
 }
 
-/*Висока контрастність*/
+/* Висока контрастність */
 body.accessontu-contrast .moremenu.navigation,
 body.accessontu-contrast .moremenu.navigation .nav-tabs,
 body.accessontu-contrast .moremenu.navigation .nav-link,
@@ -519,42 +421,441 @@ body:not(.accessontu-dark):not(.accessontu-contrast) .moremenu.navigation .nav-l
     color: #163d78 !important;
 }
 
-/*ОЗВУЧЕННЯ*/
+/* ============================================================
+   ПАНЕЛЬ ДОСТУПНОСТІ — розміщена в кінці, щоб мати перевагу
+   над темами сторінки
+   ============================================================ */
 
-.accessontu-speech-selected {
-    display: block !important;
+/* Кнопка відкриття */
+.accessontu-open {
+    position: fixed;
+    right: var(--ao-s4);
+    bottom: var(--ao-s4);
+    z-index: 10000;
+    padding: var(--ao-s3) var(--ao-s4);
+    border: var(--ao-bw) solid var(--ao-open-line) !important;
+    border-radius: var(--ao-s2);
+    background-color: var(--ao-open-bg) !important;
+    color: var(--ao-open-fg) !important;
+    font-family: var(--ao-font) !important;
+    font-size: var(--ao-fs) !important;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.accessontu-open:hover {
+    transform: translateY(-2px);
+}
+
+/* Панель */
+.accessontu-panel {
+    position: fixed;
+    right: var(--ao-s4);
+    bottom: 89px; /* 21 + 68: проміжок над кнопкою */
+    z-index: 10001;
+    box-sizing: border-box !important;
+    width: 377px !important; /* число Фібоначчі */
+    min-width: 0 !important;
+    max-width: calc(100vw - 42px) !important;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    padding: var(--ao-s4);
+    border: 1px solid var(--ao-line);
+    border-radius: var(--ao-s3);
+    background: var(--ao-bg);
+    color: var(--ao-fg);
+    box-shadow: 0 8px 34px rgba(0, 0, 0, 0.16);
+    font-family: var(--ao-font) !important;
+    font-size: var(--ao-fs) !important;
+    line-height: var(--ao-lh) !important;
+    letter-spacing: normal !important;
+}
+
+.accessontu-panel *,
+.accessontu-panel *::before,
+.accessontu-panel *::after {
+    box-sizing: border-box !important;
+}
+
+.accessontu-panel[hidden] {
+    display: none !important;
+}
+
+/* Шапка */
+.accessontu-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--ao-s3);
+}
+
+.accessontu-panel__header h3 {
+    margin: 0 !important;
+    color: var(--ao-head);
+    font-size: var(--ao-fs-title) !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+}
+
+.accessontu-panel__header button {
+    flex-shrink: 0 !important;
+    width: var(--ao-h) !important;
+    min-width: var(--ao-h) !important;
+    height: var(--ao-h) !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: var(--ao-s2);
+    background: transparent !important;
+    font-size: 26px !important;
+    line-height: 1 !important;
+    cursor: pointer;
+}
+
+/* Секції */
+/* Кожна секція відділена лінією */
+.accessontu-panel__section {
+    margin: 0;
+    padding: var(--ao-s4) 0;
+    border-top: var(--ao-bw) solid var(--ao-line);
+}
+
+/* Вкладені секції (Голос, Швидкість) — без власних ліній */
+.accessontu-panel__section .accessontu-panel__section {
+    padding: var(--ao-s3) 0 0;
+    border-top: 0;
+}
+
+.accessontu-panel__section label,
+.accessontu-panel__section .accessontu-label {
+    display: block;
+    margin-bottom: var(--ao-s2);
+    color: var(--ao-head);
+    font-weight: 700;
+}
+
+/* Кнопки, списки, поля */
+.accessontu-panel button,
+.accessontu-panel select {
+    font-family: var(--ao-font) !important;
+    font-size: var(--ao-fs) !important;
+    line-height: 1.2 !important;
+    letter-spacing: normal !important;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.accessontu-panel select {
     width: 100% !important;
-    max-width: 240px !important;
-    min-height: 42px !important;
-    margin: 25px auto !important;
-    padding: 10px 15px !important;
-    border-radius: 7px !important;
-    font-size: 14px !important;
-    font-weight: bold !important;
+    height: var(--ao-h) !important;
+    min-height: var(--ao-h) !important;
+    padding: 0 var(--ao-s3);
+    border: var(--ao-bw) solid var(--ao-line);
+    border-radius: var(--ao-s2);
+    background-color: var(--ao-select-bg);
+    color: var(--ao-select-fg);
+}
+
+.accessontu-panel select option {
+    background-color: var(--ao-select-bg);
+    color: var(--ao-select-fg);
+}
+
+.accessontu-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--ao-s3);
+}
+
+.accessontu-controls button {
+    flex-shrink: 0 !important;
+    width: var(--ao-w) !important; /* 44 × φ */
+    min-width: var(--ao-w) !important;
+    height: var(--ao-h) !important;
+    min-height: var(--ao-h) !important;
+    padding: 0 !important;
+    border: var(--ao-bw) solid var(--ao-line);
+    border-radius: var(--ao-s2);
+    background-color: var(--ao-btn);
+    color: var(--ao-btn-fg);
+}
+
+.accessontu-controls span {
+    min-width: 55px;
+    font-weight: 700;
+    text-align: center;
+}
+
+#accessontu-reset {
+    width: 100%;
+    height: var(--ao-h) !important;
+    min-height: var(--ao-h) !important;
+    margin-top: 0;
+    padding: 0 var(--ao-s3);
+    border: var(--ao-bw) solid var(--ao-line);
+    border-radius: var(--ao-s2);
+    background-color: transparent;
+    color: var(--ao-btn-fg);
+}
+
+.accessontu-panel input[type="range"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    accent-color: var(--ao-accent);
+    cursor: pointer;
+}
+
+/* Наведення і фокус */
+.accessontu-panel button:hover,
+.accessontu-panel select:hover {
+    background-color: var(--ao-btn-hover);
+    color: var(--ao-btn-hover-fg);
+}
+
+.accessontu-panel :focus-visible,
+.accessontu-open:focus-visible {
+    outline: 3px solid var(--ao-accent);
+    outline-offset: 2px;
+}
+
+/* Теми: перебиваємо загальні правила сторінки */
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel,
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel * {
+    color: var(--ao-fg) !important;
+}
+
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel {
+    background-color: var(--ao-bg) !important;
+    border: var(--ao-bw) solid var(--ao-line) !important;
+}
+
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel h3,
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel label,
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel .accessontu-label {
+    color: var(--ao-head) !important;
+}
+
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel button,
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel select {
+    background-color: var(--ao-btn) !important;
+    color: var(--ao-btn-fg) !important;
+    border: var(--ao-bw) solid var(--ao-line) !important;
+}
+
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel select,
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel select option {
+    background-color: var(--ao-select-bg) !important;
+    color: var(--ao-select-fg) !important;
+}
+
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel__header button {
+    border: none !important;
+    background: transparent !important;
+}
+
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel button:hover,
+body:is(.accessontu-dark, .accessontu-contrast) .accessontu-panel select:hover {
+    background-color: var(--ao-btn-hover) !important;
+    color: var(--ao-btn-hover-fg) !important;
+}
+
+/* ============================================================
+   ПРАПОРЦІ ТА ДОПОМОГА ПІД ЧАС ЧИТАННЯ
+   ============================================================ */
+.accessontu-panel .accessontu-check {
+    display: flex;
+    align-items: center;
+    gap: var(--ao-s3);
+    min-height: var(--ao-h);
+    margin: 0;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.accessontu-panel .accessontu-check input {
+    flex: 0 0 var(--ao-s4);
+    width: var(--ao-s4);
+    height: var(--ao-s4);
+    margin: 0;
+    accent-color: var(--ao-accent);
+    cursor: pointer;
+}
+
+.accessontu-status {
+    margin: var(--ao-s3) 0 0 !important;
+    font-size: var(--ao-fs) !important;
+}
+
+.accessontu-status:empty {
+    display: none;
+}
+
+/* Лінійка читання: світла смуга, решта екрана затемнена */
+.accessontu-ruler {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    width: 100%;
+    height: var(--ao-h);
+    transform: translateY(40vh);
+    border-top: 2px solid var(--ao-accent);
+    border-bottom: 2px solid var(--ao-accent);
+    box-shadow: 0 0 0 100vmax var(--ao-dim);
+    pointer-events: none;
+}
+
+.accessontu-ruler[hidden] {
+    display: none;
+}
+
+/* Вузька колонка (~72 символи) — вибір селекторів під Moodle */
+body.accessontu-narrow #region-main,
+body.accessontu-narrow main {
+    max-width: 72ch;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Без анімацій */
+body.accessontu-reduce-motion *,
+body.accessontu-reduce-motion *::before,
+body.accessontu-reduce-motion *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+}
+
+/* Абзац, що озвучується зараз */
+.accessontu-reading,
+.accessontu-reading * {
+    background-color: var(--ao-read-bg) !important;
+    color: var(--ao-read-fg) !important;
+}
+
+.accessontu-reading {
+    outline: 3px solid var(--ao-accent);
+    outline-offset: 3px;
+    border-radius: var(--ao-s1);
+}
+
+/* Режим вибору місця, з якого читати */
+body.accessontu-picking,
+body.accessontu-picking * {
+    cursor: crosshair !important;
+}
+
+.accessontu-pick-hover {
+    outline: 2px dashed var(--ao-accent) !important;
+    outline-offset: 3px;
+}
+
+/* ============================================================
+   ОЗВУЧЕННЯ — кнопки за id з розмітки панелі.
+   Рядок керування: « ▶/❚❚ » ■ ; ▶ ширший за інші у 1.618 раза.
+   Id-селектори перебивають і .accessontu-controls button,
+   і правила тем для кнопок панелі.
+   ============================================================ */
+body #accessontu-speak-selected,
+body #accessontu-read-from,
+body #accessontu-prev,
+body #accessontu-speak,
+body #accessontu-next,
+body #accessontu-stop {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: var(--ao-h) !important;
+    min-height: var(--ao-h) !important;
+    padding: 0 var(--ao-s3) !important;
+    border: var(--ao-bw) solid var(--ao-line) !important;
+    border-radius: var(--ao-s2) !important;
+    background-color: var(--ao-btn) !important;
+    color: var(--ao-btn-fg) !important;
+    font-family: var(--ao-font) !important;
+    font-size: var(--ao-fs) !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
     text-align: center !important;
     cursor: pointer;
 }
 
-.accessontu-speech-start,
-.accessontu-speech-stop {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 42px !important;
-    min-width: 42px !important;
-    height: 42px !important;
-    min-height: 42px !important;
-    margin: 5px !important;
-    padding: 0 !important;
-    border-radius: 8px !important;
-    font-size: 19px !important;
-    cursor: pointer;
+/* Повноширинні кнопки з акцентною рамкою */
+body #accessontu-speak-selected,
+body #accessontu-read-from {
+    width: 100% !important;
+    margin: var(--ao-s3) 0 0 !important;
+    border-color: var(--ao-accent) !important;
+    color: var(--ao-accent) !important;
 }
 
-.accessontu-speech-controls {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 15px !important;
-    margin: 15px 0 !important;
+body #accessontu-speak-selected {
+    margin-top: var(--ao-s4) !important;
+}
+
+/* Режим вибору увімкнено */
+body #accessontu-read-from[aria-pressed="true"] {
+    background-color: var(--ao-accent) !important;
+    color: var(--ao-bg) !important;
+}
+
+/* Рядок керування */
+#accessontu-speak-selected ~ .accessontu-controls {
+    margin-top: var(--ao-s3);
+}
+
+body #accessontu-prev,
+body #accessontu-next,
+body #accessontu-stop {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    font-size: 21px !important;
+}
+
+/* ▶ / ❚❚ — головна дія */
+body #accessontu-speak {
+    flex: 1.618 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    border-color: var(--ao-primary-bg) !important;
+    background-color: var(--ao-primary-bg) !important;
+    color: var(--ao-primary-fg) !important;
+    font-size: 21px !important;
+}
+
+/* Наведення */
+body #accessontu-speak-selected:hover,
+body #accessontu-read-from:hover,
+body #accessontu-prev:hover,
+body #accessontu-next:hover,
+body #accessontu-stop:hover {
+    background-color: var(--ao-btn-hover) !important;
+    color: var(--ao-btn-hover-fg) !important;
+}
+
+body #accessontu-speak:hover {
+    border-color: var(--ao-primary-hover) !important;
+    background-color: var(--ao-primary-hover) !important;
+    color: var(--ao-primary-fg) !important;
+}
+
+body.accessontu-contrast #accessontu-speak:hover {
+    color: #000000 !important;
+}
+
+/* Повага до налаштувань «зменшити анімацію» */
+@media (prefers-reduced-motion: reduce) {
+    .accessontu-open,
+    .accessontu-panel button,
+    .accessontu-panel select {
+        transition: none;
+    }
+
+    .accessontu-open:hover {
+        transform: none;
+    }
 }
